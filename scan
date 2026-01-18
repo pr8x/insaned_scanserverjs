@@ -1,0 +1,29 @@
+#!/bin/bash
+
+# Execute the scan request
+curl "$SCAN_URL" \
+  -H 'Content-Type: application/json' \
+  --compressed \
+  --insecure \
+  --data @- <<EOF
+{
+    "params": {
+      "deviceId": "$DEVICE_ID",
+      "resolution": $RESOLUTION,
+      "width": $WIDTH,
+      "height": $HEIGHT,
+      "left": $LEFT,
+      "top": $TOP,
+      "pageHeight": $PAGE_HEIGHT,
+      "pageWidth": $PAGE_WIDTH,
+      "mode": "$MODE",
+      "source": "$SOURCE",
+      "brightness": $BRIGHTNESS,
+      "contrast": $CONTRAST
+    },
+    "filters": [],
+    "pipeline": "$PIPELINE",
+    "batch": "$BATCH",
+    "index": $INDEX
+}
+EOF

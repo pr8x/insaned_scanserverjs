@@ -1,0 +1,43 @@
+version: "3.8"
+
+services:
+  insaned:
+    container_name: insaned
+    build: .
+    restart: "always"
+    privileged: true
+    depends_on:
+      - scanservjs
+    volumes:
+      - /var/run/dbus:/var/run/dbus
+      - /dev/bus/usb:/dev/bus/usb
+    environment:
+      - SCAN_URL=http://scanservjs:8080/api/v1/scan
+      - DEVICE_ID=fujitsu:ScanSnap iX500:1503743
+      - RESOLUTION=150
+      - WIDTH=215.8
+      - HEIGHT=279.3
+      - LEFT=0
+      - TOP=0
+      - PAGE_HEIGHT=279.3
+      - PAGE_WIDTH=215.8
+      - MODE=Color
+      - SOURCE=ADF Duplex
+      - BRIGHTNESS=0
+      - CONTRAST=0
+      - PIPELINE=@:pipeline.ocr | PDF (JPG | @:pipeline.high-quality)
+      - BATCH=auto
+      - INDEX=1
+
+  scanservjs:
+    image: sbs20/scanservjs:latest
+    container_name: scanservjs-container
+    privileged: true
+    restart: unless-stopped
+    environment:
+      - OCR_LANG=deu
+    ports:
+      - "9002:8080"
+    volumes:
+      - /var/run/dbus:/var/run/dbus
+      - /dev/bus/usb:/dev/bus/usb
