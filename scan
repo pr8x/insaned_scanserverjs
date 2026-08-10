@@ -22,10 +22,13 @@ extra=""
 [ -n "$SCANSERVJS_BATCH" ] && extra+=",\"batch\":\"$SCANSERVJS_BATCH\""
 [ -n "$SCANSERVJS_INDEX" ] && extra+=",\"index\":$SCANSERVJS_INDEX"
 
+payload="{\"params\":${params},\"filters\":[],\"pipeline\":\"${SCANSERVJS_PIPELINE}\"${extra}}"
+echo "[$(date '+%Y-%m-%d %H:%M:%S')] Scan payload: $payload"
+
 # Execute the scan request
-curl "$SCAN_URL" \
+curl -s "$SCAN_URL" \
   -H 'Content-Type: application/json' \
   --compressed \
   --insecure \
   --max-time 30 \
-  --data-raw "{\"params\":${params},\"filters\":[],\"pipeline\":\"${SCANSERVJS_PIPELINE}\"${extra}}"
+  --data-raw "$payload"
