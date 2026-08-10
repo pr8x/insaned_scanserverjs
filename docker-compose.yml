@@ -13,21 +13,8 @@ services:
       - /dev/bus/usb:/dev/bus/usb
     environment:
       - SCAN_URL=http://scanservjs:8080/api/v1/scan
-      - DEVICE_ID=fujitsu:ScanSnap iX500:1503743
-      - RESOLUTION=150
-      - WIDTH=215.8
-      - HEIGHT=279.3
-      - LEFT=0
-      - TOP=0
-      - PAGE_HEIGHT=279.3
-      - PAGE_WIDTH=215.8
-      - MODE=Color
-      - SOURCE=ADF Duplex
-      - BRIGHTNESS=0
-      - CONTRAST=0
-      - PIPELINE=@:pipeline.ocr | PDF (JPG | @:pipeline.high-quality)
-      - BATCH=auto
-      - INDEX=1
+      - SCANSERVJS_DEVICE_ID=fujitsu:ScanSnap iX500:1503743
+      - SCANSERVJS_PIPELINE=@:pipeline.ocr | PDF (JPG | @:pipeline.high-quality)
 
   scanservjs:
     image: sbs20/scanservjs:latest

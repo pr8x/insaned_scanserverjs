@@ -1,29 +1,31 @@
 #!/bin/bash
 
+# Build params object with only set values
+params='{"deviceId":"'"$SCANSERVJS_DEVICE_ID"'"'
+
+[ -n "$SCANSERVJS_RESOLUTION" ] && params+=",\"resolution\":$SCANSERVJS_RESOLUTION"
+[ -n "$SCANSERVJS_WIDTH" ] && params+=",\"width\":$SCANSERVJS_WIDTH"
+[ -n "$SCANSERVJS_HEIGHT" ] && params+=",\"height\":$SCANSERVJS_HEIGHT"
+[ -n "$SCANSERVJS_LEFT" ] && params+=",\"left\":$SCANSERVJS_LEFT"
+[ -n "$SCANSERVJS_TOP" ] && params+=",\"top\":$SCANSERVJS_TOP"
+[ -n "$SCANSERVJS_PAGE_HEIGHT" ] && params+=",\"pageHeight\":$SCANSERVJS_PAGE_HEIGHT"
+[ -n "$SCANSERVJS_PAGE_WIDTH" ] && params+=",\"pageWidth\":$SCANSERVJS_PAGE_WIDTH"
+[ -n "$SCANSERVJS_MODE" ] && params+=",\"mode\":\"$SCANSERVJS_MODE\""
+[ -n "$SCANSERVJS_SOURCE" ] && params+=",\"source\":\"$SCANSERVJS_SOURCE\""
+[ -n "$SCANSERVJS_BRIGHTNESS" ] && params+=",\"brightness\":$SCANSERVJS_BRIGHTNESS"
+[ -n "$SCANSERVJS_CONTRAST" ] && params+=",\"contrast\":$SCANSERVJS_CONTRAST"
+
+params+="}"
+
+# Build top-level optional fields
+extra=""
+[ -n "$SCANSERVJS_BATCH" ] && extra+=",\"batch\":\"$SCANSERVJS_BATCH\""
+[ -n "$SCANSERVJS_INDEX" ] && extra+=",\"index\":$SCANSERVJS_INDEX"
+
 # Execute the scan request
 curl "$SCAN_URL" \
   -H 'Content-Type: application/json' \
   --compressed \
   --insecure \
-  --data @- <<EOF
-{
-    "params": {
-      "deviceId": "$DEVICE_ID",
-      "resolution": $RESOLUTION,
-      "width": $WIDTH,
-      "height": $HEIGHT,
-      "left": $LEFT,
-      "top": $TOP,
-      "pageHeight": $PAGE_HEIGHT,
-      "pageWidth": $PAGE_WIDTH,
-      "mode": "$MODE",
-      "source": "$SOURCE",
-      "brightness": $BRIGHTNESS,
-      "contrast": $CONTRAST
-    },
-    "filters": [],
-    "pipeline": "$PIPELINE",
-    "batch": "$BATCH",
-    "index": $INDEX
-}
-EOF
+  --max-time 30 \
+  --data-raw "{\"params\":${params},\"filters\":[],\"pipeline\":\"${SCANSERVJS_PIPELINE}\"${extra}}"
